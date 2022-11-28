@@ -15,12 +15,24 @@ export class Tab1Page {
   //Page Title
   title = "Grocery List";
 
-  constructor(public toastCtrl: ToastController, public alertCtrl: AlertController, public DataService: GroceriesServiceService, public InputService: InputDialogServiceService, public socialShare: SocialSharing) {
+  items = [];
+  errorMessage: string;
 
+  constructor(public toastCtrl: ToastController, public alertCtrl: AlertController, public DataService: GroceriesServiceService, public InputService: InputDialogServiceService, public socialShare: SocialSharing) {
+    DataService.dataChanged$.subscribe((dataChanged: boolean) => {
+      this.loadItems();
+    });
+  }
+
+  ionViewDidLoad(){
+    this.loadItems();
   }
 
   loadItems(){
-    return this.DataService.getItems();
+    this.DataService.getItems()
+      .subscribe(
+        items => this.items = items,
+        error => this.errorMessage = <any>error);
   }
 
     //Remove item from items array
